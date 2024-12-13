@@ -1,0 +1,8 @@
+@startuml
+enum AtomicComponent {
++ bondingCapacity
++ name // only applicable for halogens
+}
+
+
+@enduml
