@@ -18,15 +18,22 @@ For alpha -> beta, the only necessary components are:
 Perhaps this should be an ENUM?
 
 ## Analyzing
-This is the second package of the project. It works to take apart the molecule and determine what it is. 
+Chemical names, as far as this program is concerned, is structured as follows (BNF format):
 
-There are a few stops the program must make before it can determine what the compound is.
-1. What is the type of molecule? 
-   * Alcohol, Aliphatic or, if I get to it, an ester or aromatic molecule
-2. How do I name it?
-   * This involves analyzing the structure and finding key components
-   * If I have time, this is also where name simplification will occur
+```
+<LengthPrefix> ::= "meth" | "eth" | "prop" | ... | "dec"
+<LocationNumPrefix> ::= "mono" | "di" | ... | "deca"
+<AliphaticTypeSuffix> ::= "ane" | "ene" | "yne"
+<cyclo> ::= "cyclo" | ""
+<Location> ::= <number>
+<LocationSet> ::= <Location> | <LocationSet>"," <Location>
 
-For part 1, I can simply look for a specific structure
-* If there is a hydroxyl, it is an alcohol
-* else, it's aliphatic
+<HalogenBranch> ::= "chloro" | "floro" | "bromo" | "iodo"
+<BranchName> ::= <cyclo><LengthPrefix>"yl" | <HalogenBranch>
+<RootName> ::= <cyclo><LengthPrefix><AliphaticTypeSuffix>
+
+<Branch> ::= <LocationSet> "-" <BranchName>
+<Root> ::= <RootName>
+<Branches> ::= <Branch> | <Branch> "-" <Branches>
+<Molecule> ::= <Root> | <Branches><Root>
+``` 

@@ -1,8 +1,43 @@
 @startuml
+AtomicComponent o-> ComponentIDPair
+
 enum AtomicComponent {
 + bondingCapacity
-+ name // only applicable for halogens
++ name // only applicable to halogens
+
++ CARBON(4, "N/A")
++ FLUORINE(1, "floro"),
++ CHLORINE(1, "chloro"),
++ BROMINE(1, "bromo"),
++ IODINE(1, "iodo"),
++ HYDROXYL(1, "N/A");
+}
+class ComponentIDPair{
++ component: AtomicComponent
++ uuid
 }
 
+package Core {
+    abstract class Main{
+        + main(args)
+        + importGraph(file)
+        // package handles graph drawing and visualization
+    }
+}
+
+package analysis{
+BranchAnalyzer -> MoleculeAnalyzer
+AliphaticRootAnalyzer -> MoleculeAnalyzer
+AlcoholRootAnalyzer -> MoleculeAnalyzer
+
+interface MoleculeAnalyzer{
++ getName()
+}
+
+class MolecularClassifier {
++ getAnalyzer(graph): MoleculeAnalyzer
+}
+
+}
 
 @enduml
