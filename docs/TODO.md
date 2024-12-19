@@ -6,7 +6,7 @@
   * (only Aliphatic Branches and Halogens)
 * `next` Root naming
 * Molecule naming (combine Branch and Root naming)
-  * Longest path detection
+  * `done` Longest path detection
   * Subgraphing
 * JavaFX
   * Make window

@@ -3,10 +3,12 @@ package io.github.thdudk.analysis;
 import io.github.thdudk.components.ComponentIdPair;
 import io.github.thdudk.graphs.unweighted.Graph;
 
+import java.util.List;
+
 ///
 public abstract class RootClassifier {
-    public static Graph<ComponentIdPair> getRoot(Graph<ComponentIdPair> molecule) {
-        // get the longest path
-        return null;
+    public static List<ComponentIdPair> getRoot(Graph<ComponentIdPair> molecule) {
+        // Works only for Alkanes rn
+        return molecule.longestSpanningPath(molecule.findNode(a -> true).orElseThrow());
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 /// Currently, the only feature it determines is the molecule's full name
 public class MoleculeAnalyzer {
     private final Graph<ComponentIdPair> molecule;
-    private final Graph<ComponentIdPair> root;
+    private final List<ComponentIdPair> root;
     private final List<Feature> features;
 
     public MoleculeAnalyzer(Graph<ComponentIdPair> molecule) {
