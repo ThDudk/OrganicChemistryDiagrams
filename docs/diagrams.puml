@@ -26,16 +26,23 @@ package Core {
 }
 
 package analysis{
-BranchAnalyzer -> MoleculeAnalyzer
-AliphaticRootAnalyzer -> MoleculeAnalyzer
-AlcoholRootAnalyzer -> MoleculeAnalyzer
 
-interface MoleculeAnalyzer{
+BranchFeature -> Feature
+SuffixFeature -> Feature
+MoleculeAnalyzer o-> Feature
+
+interface Feature {
 + getName()
++ getPriority()
 }
+interface BranchFeature{}
+interface SuffixFeature {}
 
-class MolecularClassifier {
-+ getAnalyzer(graph): MoleculeAnalyzer
+class MoleculeAnalyzer{
++ molecule
++ root: Graph
++ features: Feature[]
++ getName()
 }
 
 }
