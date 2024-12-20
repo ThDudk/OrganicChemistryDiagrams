@@ -8,19 +8,21 @@ import java.util.List;
 /// Class that will take in a molecule and determine its features.
 ///
 /// Currently, the only feature it determines is the molecule's full name
-public class MoleculeAnalyzer {
+public class MoleculeClassifier {
     private final Graph<ComponentIdPair> molecule;
-    private final List<ComponentIdPair> root;
-    private final List<Feature> features;
+    private final RootNamer rootNamer;
 
-    public MoleculeAnalyzer(Graph<ComponentIdPair> molecule) {
+    public MoleculeClassifier(Graph<ComponentIdPair> molecule) {
         this.molecule = molecule;
-        root = RootClassifier.getRoot(molecule);
-        features = null;
+        rootNamer = getRootNamer(molecule);
+    }
+
+    private static RootNamer getRootNamer(Graph<ComponentIdPair> molecule) {
+        return new AlkaneNamer(molecule.longestSpanningPath(molecule.findNode(a -> true).orElseThrow())); // convert to PathGraph
     }
 
     public String getExplicitName() {
-        throw new RuntimeException("Not yet implemented");
+        return rootNamer.getName();
     }
 
 }
