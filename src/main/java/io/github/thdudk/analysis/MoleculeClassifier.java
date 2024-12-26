@@ -5,9 +5,6 @@ import io.github.thdudk.graphs.unweighted.Graph;
 
 import java.util.List;
 
-/// Class that will take in a molecule and determine its features.
-///
-/// Currently, the only feature it determines is the molecule's full name
 public class MoleculeClassifier {
     private final Graph<ComponentIdPair> molecule;
     private final RootNamer rootNamer;
@@ -18,7 +15,7 @@ public class MoleculeClassifier {
     }
 
     private static RootNamer getRootNamer(Graph<ComponentIdPair> molecule) {
-        return new AlkaneNamer(molecule.longestSpanningPath(molecule.findNode(a -> true).orElseThrow())); // convert to PathGraph
+        return new AlkaneNamer(molecule);
     }
 
     public String getExplicitName() {

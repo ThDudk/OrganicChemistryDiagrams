@@ -13,4 +13,9 @@ public class ComponentIdPair {
         this.component = component;
         uuid = UUID.randomUUID();
     }
+
+    @Override
+    public String toString() {
+        return "{" + component.toString().substring(0, 2) + ", " + uuid.toString().substring(0, 3) + "}";
+    }
 }

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import static java.util.Map.entry;
 
+/// collection of prefixes for certain chemical things. I may replace this with a file later on if I feel like it. (probably not)
 public abstract class Prefixes{
     public final static Map<Integer, String> carbonLength = Map.ofEntries(
         entry(1, "meth"), entry(2, "eth"), entry(3, "prop"),

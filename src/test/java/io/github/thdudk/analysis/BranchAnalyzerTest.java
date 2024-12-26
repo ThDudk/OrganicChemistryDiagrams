@@ -23,6 +23,6 @@ class BranchAnalyzerTest {
                 AtomicComponents.CARBON.idPair()
             )).build();
 
-        assertEquals("butyl", new BranchAnalyzer(graph).getName());
+        assertEquals("butyl", BranchNamer.getName(graph));
     }
 }

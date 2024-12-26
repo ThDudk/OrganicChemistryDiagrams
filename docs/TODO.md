@@ -1,13 +1,13 @@
 # TODO
 
 ## MVP Tasks
-* `partially done` Planning
+* `done` Planning
 * `done` Branch naming
-  * (only Aliphatic Branches and Halogens)
-* `next` Root naming
-* Molecule naming (combine Branch and Root naming)
+  * `done` (only Aliphatic Branches and Halogens)
+* `done` Root naming
+* `done` Molecule naming (combine Branch and Root naming)
   * `done` Longest path detection
-  * Subgraphing
+  * `done` Subgraphing
 * JavaFX
   * Make window
   * Draw molecules on the window
