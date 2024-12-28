@@ -1,8 +1,10 @@
 package io.github.thdudk.analysis;
 
 import io.github.thdudk.Prefixes;
+import io.github.thdudk.components.Bonds;
 import io.github.thdudk.components.ComponentIdPair;
 import io.github.thdudk.graphs.unweighted.Graph;
+import io.github.thdudk.graphs.weighted.WeightedGraph;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.apache.commons.lang3.tuple.Pair;
@@ -14,7 +16,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 public abstract class BranchesNamer {
-    public static String getName(Map<Graph<ComponentIdPair>, List<Integer>> branches) {
+    public static String getName(Map<WeightedGraph<ComponentIdPair, Bonds>, List<Integer>> branches) {
         if(branches.isEmpty()) return "";
 
         val positions = new HashMap<String, List<Integer>>();

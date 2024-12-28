@@ -1,9 +1,11 @@
 package io.github.thdudk.analysis;
 
 import io.github.thdudk.components.AtomicComponents;
+import io.github.thdudk.components.Bonds;
 import io.github.thdudk.components.ComponentIdPair;
 import io.github.thdudk.Prefixes;
 import io.github.thdudk.graphs.unweighted.Graph;
+import io.github.thdudk.graphs.weighted.WeightedGraph;
 import lombok.AllArgsConstructor;
 
 // TO BE REMOVED SHORTLY
@@ -12,7 +14,7 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public abstract class BranchNamer {
-    public static String getName(Graph<ComponentIdPair> graph) {
+    public static String getName(WeightedGraph<ComponentIdPair, Bonds> graph) {
         if(isHalogen(graph))
             // return the name of the only component
             return graph.findNode(a -> true).orElseThrow().getComponent().name;

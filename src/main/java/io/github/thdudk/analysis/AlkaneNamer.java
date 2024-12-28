@@ -3,8 +3,13 @@ package io.github.thdudk.analysis;
 import io.github.thdudk.CSAcademyConvertor;
 import io.github.thdudk.Prefixes;
 import io.github.thdudk.components.AtomicComponents;
+import io.github.thdudk.components.Bonds;
 import io.github.thdudk.components.ComponentIdPair;
+import io.github.thdudk.graphs.unweighted.AdjacencyListGraphImpl;
 import io.github.thdudk.graphs.unweighted.Graph;
+import io.github.thdudk.graphs.weighted.AdjacencyListWeightedGraphImpl;
+import io.github.thdudk.graphs.weighted.WeightedGraph;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.val;
@@ -13,14 +18,17 @@ import javax.swing.text.html.Option;
 import java.util.*;
 
 @ToString
+@Getter
 public class AlkaneNamer implements RootNamer {
     private final List<ComponentIdPair> rootPath;
-    private final Map<Graph<ComponentIdPair>, List<Integer>> branches;
+    private final Map<WeightedGraph<ComponentIdPair, Bonds>, List<Integer>> branches;
 
-    public AlkaneNamer(Graph<ComponentIdPair> molecule) {
+    public AlkaneNamer(WeightedGraph<ComponentIdPair, Bonds> molecule) {
         // iterate through all root path candidates and choose the first valid one
         for(List<ComponentIdPair> path : getRootPathCandidates(molecule)) {
             val pathBranches = getBranches(molecule, path);
+
+            System.out.println(path + " : "  + pathBranches);
 
             if(producesInvalidBranches(molecule, path)) continue; // ignore this root path if there are invalid branches
 
@@ -32,7 +40,7 @@ public class AlkaneNamer implements RootNamer {
         // if the program has reached this point, it failed to find a valid root path
         throw new RuntimeException("Failed to locate valid root path");
     }
-    protected static List<List<ComponentIdPair>> getRootPathCandidates(Graph<ComponentIdPair> molecule) {
+    public List<List<ComponentIdPair>> getRootPathCandidates(WeightedGraph<ComponentIdPair, Bonds> molecule) {
         val carbonMolecule = molecule.filter(a -> a.getComponent().equals(AtomicComponents.CARBON));
 
         List<List<ComponentIdPair>> candidates = new ArrayList<>();
@@ -44,8 +52,10 @@ public class AlkaneNamer implements RootNamer {
             // goes through all possible paths and only keep those with the longest length
             for(List<ComponentIdPair> path : carbonMolecule.allFullyExtendedPathsFrom(node)) {
                 // current path is equally long to the longest found
-                if(candidates.isEmpty() || candidates.getFirst().size() == path.size())
+                if(candidates.isEmpty() || candidates.getFirst().size() == path.size()){
                     candidates.add(path);
+                    continue;
+                }
 
                 // current path is longer than the longest found
                 if(candidates.getFirst().size() < path.size()) {
@@ -58,7 +68,7 @@ public class AlkaneNamer implements RootNamer {
         return candidates;
     }
 
-    protected static boolean producesInvalidBranches(Graph<ComponentIdPair> molecule, List<ComponentIdPair> rootPath) {
+    protected static boolean producesInvalidBranches(WeightedGraph<ComponentIdPair, Bonds> molecule, List<ComponentIdPair> rootPath) {
         for(Graph<ComponentIdPair> branch : splitBranches(molecule, rootPath))
             for(ComponentIdPair component : branch.getNodes())
                 // A branch is invalid when it splits into more branches
@@ -67,11 +77,11 @@ public class AlkaneNamer implements RootNamer {
 
         return false; // all branches are valid
     }
-    protected static Map<Graph<ComponentIdPair>, List<Integer>> getBranches(Graph<ComponentIdPair> molecule, List<ComponentIdPair> rootPath) {
-        Map<Graph<ComponentIdPair>, List<Integer>> branches = new HashMap<>();
+    protected static Map<WeightedGraph<ComponentIdPair, Bonds>, List<Integer>> getBranches(WeightedGraph<ComponentIdPair, Bonds> molecule, List<ComponentIdPair> rootPath) {
+        Map<WeightedGraph<ComponentIdPair, Bonds>, List<Integer>> branches = new HashMap<>();
 
         // identify the positions of all branches
-        for(Graph<ComponentIdPair> branch : splitBranches(molecule, rootPath)) {
+        for(WeightedGraph<ComponentIdPair, Bonds> branch : splitBranches(molecule, rootPath)) {
             branches.putIfAbsent(branch, new ArrayList<>());
 
             int posIdx = -1;
@@ -89,12 +99,18 @@ public class AlkaneNamer implements RootNamer {
         return branches;
     }
 
-    protected static Set<Graph<ComponentIdPair>> splitBranches(Graph<ComponentIdPair> molecule, List<ComponentIdPair> rootPath) {
-        return molecule.filter(a -> !rootPath.contains(a)).getAllDisconnectedGraphs();
+    protected static Set<WeightedGraph<ComponentIdPair, Bonds>> splitBranches(WeightedGraph<ComponentIdPair, Bonds> molecule, List<ComponentIdPair> rootPath) {
+        return molecule.filter(a -> !rootPath.contains(a))
+            .getAllDisconnectedGraphs();
     }
 
+    public String getBranchNamePortion() {
+        return BranchesNamer.getName(branches);
+    }
+    public String getRootNamePortion() {
+        return Prefixes.carbonLength.get(rootPath.size()) + "ane";
+    }
     public String getName() {
-        return BranchesNamer.getName(branches) // branch names
-            + Prefixes.carbonLength.get(rootPath.size()) + "ane"; // root name
+        return getBranchNamePortion() + getRootNamePortion();
     }
 }

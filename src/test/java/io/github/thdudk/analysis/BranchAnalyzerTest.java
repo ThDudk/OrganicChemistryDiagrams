@@ -11,18 +11,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BranchAnalyzerTest {
-
     @Test
     void getName() {
-        // make a butyl branch
-        Graph<ComponentIdPair> graph = new GraphFactory<ComponentIdPair>().undirected().builder()
-            .addUndirNeighborChain(List.of(
-                AtomicComponents.CARBON.idPair(),
-                AtomicComponents.CARBON.idPair(),
-                AtomicComponents.CARBON.idPair(),
-                AtomicComponents.CARBON.idPair()
-            )).build();
-
-        assertEquals("butyl", BranchNamer.getName(graph));
+        assertEquals("butyl", BranchNamer.getName(TestMolecules.alkaneOf(4)));
     }
 }
