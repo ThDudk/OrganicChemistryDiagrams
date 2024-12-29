@@ -7,7 +7,6 @@ import io.github.thdudk.graphs.weighted.WeightedGraph;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.val;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 
@@ -27,11 +26,11 @@ public class AlkyneNamer extends AlkaneNamer{
     }
 
     @Override
-    public List<List<ComponentIdPair>> getRootPathCandidates(WeightedGraph<ComponentIdPair, Bonds> molecule) {
+    public List<List<ComponentIdPair>> getValidRootPaths(WeightedGraph<ComponentIdPair, Bonds> molecule) {
         int numTripleBonds = getNumTripleBonds(molecule);
 
         // exclude any paths that don't contain all double bonds
-        return super.getRootPathCandidates(molecule).stream()
+        return super.getValidRootPaths(molecule).stream()
             .filter(path -> getNumTripleBonds(molecule, path) == numTripleBonds).toList();
     }
     private int getNumTripleBonds(WeightedGraph<ComponentIdPair, Bonds> molecule) {

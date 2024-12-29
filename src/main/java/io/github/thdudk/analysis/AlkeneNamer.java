@@ -10,9 +10,7 @@ import lombok.ToString;
 import lombok.val;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @ToString
 @Getter
@@ -30,11 +28,11 @@ public class AlkeneNamer extends AlkaneNamer {
     }
 
     @Override
-    public List<List<ComponentIdPair>> getRootPathCandidates(WeightedGraph<ComponentIdPair, Bonds> molecule) {
+    public List<List<ComponentIdPair>> getValidRootPaths(WeightedGraph<ComponentIdPair, Bonds> molecule) {
         int numDoubleBonds = getNumDoubleBonds(molecule);
 
         // exclude any paths that don't contain all double bonds
-        return super.getRootPathCandidates(molecule).stream()
+        return super.getValidRootPaths(molecule).stream()
             .filter(path -> getNumDoubleBonds(molecule, path) == numDoubleBonds).toList();
     }
     private int getNumDoubleBonds(WeightedGraph<ComponentIdPair, Bonds> molecule) {

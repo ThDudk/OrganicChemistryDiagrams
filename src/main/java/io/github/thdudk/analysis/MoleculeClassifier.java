@@ -23,5 +23,4 @@ public class MoleculeClassifier {
     public String getExplicitName() {
         return rootNamer.getName();
     }
-
 }

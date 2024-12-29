@@ -11,9 +11,9 @@
 * `done` Alkene and Alkyne naming
 * Alcohol naming
 * Cycle detection
-* JavaFX
-  * Make window
-  * Draw molecules on the window
+* `in progress` JavaFX
+  * `done` Make window
+  * `done` Draw molecules on the window
   * Ability to add new components
   * Ability to clear
 * Jackson support
