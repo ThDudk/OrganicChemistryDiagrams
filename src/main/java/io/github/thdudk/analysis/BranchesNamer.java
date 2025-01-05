@@ -1,6 +1,7 @@
 package io.github.thdudk.analysis;
 
 import io.github.thdudk.Prefixes;
+import io.github.thdudk.components.AtomicComponents;
 import io.github.thdudk.components.Bonds;
 import io.github.thdudk.components.ComponentIdPair;
 import io.github.thdudk.graphs.unweighted.Graph;
@@ -17,17 +18,21 @@ import java.util.Map;
 @RequiredArgsConstructor
 public abstract class BranchesNamer {
     public static String getName(Map<WeightedGraph<ComponentIdPair, Bonds>, List<Integer>> branches) {
-        if(branches.isEmpty()) return "";
-
         val positions = new HashMap<String, List<Integer>>();
 
         // get the name and positions of all branches
         for(val entry : branches.entrySet()) {
             String name = BranchNamer.getName(entry.getKey());
 
+            // ignore hydroxyls
+            if(entry.getKey().getNodes().stream().anyMatch(a -> a.getComponent().equals(AtomicComponents.HYDROXYL)))
+                continue;
+
             positions.putIfAbsent(name, new ArrayList<>());
             positions.get(name).addAll(entry.getValue());
         }
+
+        if(positions.isEmpty()) return "";
 
         // alphabetically sort the names
         List<String> names = new ArrayList<>(positions.keySet());

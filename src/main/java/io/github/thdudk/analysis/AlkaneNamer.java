@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.val;
 
+import javax.swing.text.html.Option;
 import java.util.*;
 
 @ToString
@@ -46,38 +47,47 @@ public class AlkaneNamer implements RootNamer {
         return rootPaths;
     }
 
-    protected static boolean producesInvalidBranches(WeightedGraph<ComponentIdPair, Bonds> molecule, List<ComponentIdPair> rootPath) {
+    public static boolean producesInvalidBranches(WeightedGraph<ComponentIdPair, Bonds> molecule, List<ComponentIdPair> rootPath) {
         for(Graph<ComponentIdPair> branch : splitBranches(molecule, rootPath))
-            for(ComponentIdPair component : branch.getNodes())
+            for(ComponentIdPair component : branch.getNodes()) {
                 // A branch is invalid when it splits into more branches
                 if(molecule.getOutDegree(component) >= 3)
                     return true;
 
+                // has a functional group that is not alone
+                if(branch.getNodes().size() != 1 && branch.getNodes().stream().anyMatch(a -> !a.getComponent().equals(AtomicComponents.CARBON)))
+                    return true;
+            }
+
         return false; // all branches are valid
     }
-    protected static Map<WeightedGraph<ComponentIdPair, Bonds>, List<Integer>> getBranches(WeightedGraph<ComponentIdPair, Bonds> molecule, List<ComponentIdPair> rootPath) {
+    public static Map<WeightedGraph<ComponentIdPair, Bonds>, List<Integer>> getBranches(WeightedGraph<ComponentIdPair, Bonds> molecule, List<ComponentIdPair> rootPath) {
         Map<WeightedGraph<ComponentIdPair, Bonds>, List<Integer>> branches = new HashMap<>();
 
         // identify the positions of all branches
         for(WeightedGraph<ComponentIdPair, Bonds> branch : splitBranches(molecule, rootPath)) {
             branches.putIfAbsent(branch, new ArrayList<>());
 
-            int posIdx = -1;
+            int posIdx = 0;
 
             // iterate through all root path nodes until you find one connected to the branch
             for(ComponentIdPair element : branch.getNodes())
-                for(int i = 0; i < rootPath.size(); i++)
-                    if(molecule.getOutNeighbours(rootPath.get(i)).contains(element))
-                        posIdx = i;
+                posIdx = getLocation(molecule, element, rootPath).orElse(posIdx);
 
             // add the branch position to the map
-            branches.get(branch).add(posIdx + 1);
+            branches.get(branch).add(posIdx);
         }
 
         return branches;
     }
+    public static Optional<Integer> getLocation(WeightedGraph<ComponentIdPair, Bonds> molecule, ComponentIdPair node, List<ComponentIdPair> rootPath) {
+        for(int i = 0; i < rootPath.size(); i++)
+            if(molecule.getOutNeighbours(rootPath.get(i)).contains(node))
+                return Optional.of(i + 1);
+        return Optional.empty();
+    }
 
-    protected static Set<WeightedGraph<ComponentIdPair, Bonds>> splitBranches(WeightedGraph<ComponentIdPair, Bonds> molecule, List<ComponentIdPair> rootPath) {
+    public static Set<WeightedGraph<ComponentIdPair, Bonds>> splitBranches(WeightedGraph<ComponentIdPair, Bonds> molecule, List<ComponentIdPair> rootPath) {
         return molecule.filter(a -> !rootPath.contains(a))
             .getAllDisconnectedGraphs();
     }

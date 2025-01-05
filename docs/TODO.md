@@ -9,13 +9,12 @@
   * `done` Longest path detection
   * `done` Subgraphing
 * `done` Alkene and Alkyne naming
-* Alcohol naming
+* `done (partially)` Alcohol naming
 * Cycle detection
-* `in progress` JavaFX
+* `done` JavaFX
   * `done` Make window
   * `done` Draw molecules on the window
-  * Ability to add new components
-  * Ability to clear
+  * `done` Ability to add new components
 * Jackson support
 * Molecule file management
   * Importing graphs

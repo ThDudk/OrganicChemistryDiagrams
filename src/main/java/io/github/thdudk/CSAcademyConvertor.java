@@ -14,7 +14,7 @@ public abstract class CSAcademyConvertor {
             for(val edge : graph.getEdges(node)) {
                 res += "\n" + node.getUuid().toString().substring(0, 3)
                     + " " + edge.getEndpoint().getUuid().toString().substring(0, 3)
-                    + " " + edge.getEdge().getNumber();
+                    + " " + edge.getEdge().number;
             }
         }
         return res;

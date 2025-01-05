@@ -17,7 +17,7 @@ public abstract class BranchNamer {
     public static String getName(WeightedGraph<ComponentIdPair, Bonds> graph) {
         if(isHalogen(graph))
             // return the name of the only component
-            return graph.findNode(a -> true).orElseThrow().getComponent().name;
+            return graph.findNode(a -> true).orElseThrow().getComponent().halogenRoot;
 
         // the prefix plus yl. Ex. meth + yl = methyl
         return Prefixes.carbonLength.get(graph.getNodes().size()) + "yl";

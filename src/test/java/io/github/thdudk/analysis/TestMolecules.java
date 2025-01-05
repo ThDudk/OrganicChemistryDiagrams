@@ -82,6 +82,19 @@ public class TestMolecules {
             .build();
     }
 
+    public static WeightedGraph<ComponentIdPair, Bonds> ethanol() {
+        val ethanol = alkaneOf(2);
+        return WeightedGraphBuilder.of(ethanol)
+            .addUndirEdge(getEdge(ethanol), Bonds.SINGLE, AtomicComponents.HYDROXYL.idPair())
+            .build();
+    }
+    public static WeightedGraph<ComponentIdPair, Bonds> prop2Ol() {
+        val propane = alkaneOf(3);
+        return WeightedGraphBuilder.of(propane)
+            .addUndirEdge(asList(propane).get(1), Bonds.SINGLE, AtomicComponents.HYDROXYL.idPair())
+            .build();
+    }
+
     public static List<ComponentIdPair> asList(WeightedGraph<ComponentIdPair, Bonds> molecule) {
         return molecule.allFullyExtendedPathsFrom(getEdge(molecule)).stream().findAny().orElseThrow();
     }

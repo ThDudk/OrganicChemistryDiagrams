@@ -4,11 +4,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Getter
 public enum Bonds {
-    SINGLE(1),
-    DOUBLE(2),
-    TRIPLE(3);
+    SINGLE(1, "Single"),
+    DOUBLE(2, "Double"),
+    TRIPLE(3, "Triple");
 
-    private final int number;
+    public final int number;
+    public final String displayName;
 }
