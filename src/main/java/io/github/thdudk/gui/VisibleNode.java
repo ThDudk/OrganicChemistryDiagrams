@@ -32,12 +32,12 @@ public class VisibleNode extends StackPane {
 
         this.component = component;
         symbol = new Text(component.IUPACSymbol);
-        symbol.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
+        symbol.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
         symbol.setTranslateY(-0.5); // move text up a little to align with circle
         symbol.setFill(Color.WHITE);
 
         circle.setRadius(10);
-        circle.setFill(Color.BLACK);
+        circle.setFill(component.color);
         getChildren().add(circle);
         getChildren().add(symbol);
         updatePos();
