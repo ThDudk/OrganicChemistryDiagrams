@@ -9,7 +9,7 @@
   * `done` Longest path detection
   * `done` Subgraphing
 * `done` Alkene and Alkyne naming
-* `done (partially)` Alcohol naming
+* `done` Alcohol naming
 * `done` JavaFX
   * `done` Make window
   * `done` Draw molecules on the window

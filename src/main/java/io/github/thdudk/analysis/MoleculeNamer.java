@@ -18,7 +18,7 @@ public class MoleculeNamer {
         rootNamer = getRootNamer(molecule);
     }
 
-    private static RootNamer getRootNamer(WeightedGraph<ComponentIdPair, Bonds> molecule) {
+    public static RootNamer getRootNamer(WeightedGraph<ComponentIdPair, Bonds> molecule) {
         // is an alcohol
         for(ComponentIdPair node : molecule.getNodes())
             if(node.getComponent().equals(AtomicComponents.HYDROXYL))
