@@ -10,13 +10,11 @@
   * `done` Subgraphing
 * `done` Alkene and Alkyne naming
 * `done (partially)` Alcohol naming
-* Cycle detection
 * `done` JavaFX
   * `done` Make window
   * `done` Draw molecules on the window
   * `done` Ability to add new components
-* Jackson support
-* Molecule file management
+* `done` Jackson support
+* Example Molecules
   * Importing graphs
-  * Saving graphs
-  * UI Menu
+  * `done` UI Menu

@@ -59,6 +59,6 @@ public class AlkeneNamer extends AlkaneNamer {
         String alkaneRoot = super.getRootNamePortion();
         return alkaneRoot.substring(0, alkaneRoot.length() - 3)
             + "-" + doubleBondLocations.toString().substring(1, doubleBondLocations.toString().length() - 1).replaceAll(" ", "")
-            + "-" + Prefixes.componentCount.get(doubleBondLocations.size()) + "ene";
+            + "-" + Prefixes.BondComponentCount.get(doubleBondLocations.size()) + "ene";
     }
 }

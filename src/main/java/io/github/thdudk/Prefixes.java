@@ -42,4 +42,22 @@ public abstract class Prefixes{
         entry(43, "trequadraginta"), entry(44, "tetrarquadraginta"), entry(45, "pentquadraginta"),
         entry(46, "hexquadraginta"), entry(47, "heptquadraginta"), entry(48, "octquadraginta"),
         entry(49, "nonquadraginta"), entry(50, "quinquaginta"));
+    public final static Map<Integer, String> BondComponentCount = Map.ofEntries(
+        entry(1, ""), entry(2, "di"), entry(3, "tri"),
+        entry(4, "tetr"), entry(5, "hept"), entry(6, "hex"),
+        entry(7, "hept"), entry(8, "oct"), entry(9, "non"),
+        entry(10, "dec"), entry(11, "undec"), entry(12, "dodec"),
+        entry(13, "tridec"), entry(14, "tetradec"), entry(15, "pentadec"),
+        entry(16, "hexadec"), entry(17, "heptadec"), entry(18, "octadec"),
+        entry(19, "nonadec"), entry(20, "icos"), entry(21, "henicos"),
+        entry(22, "docos"), entry(23, "tricos"), entry(24, "tetracos"),
+        entry(25, "pentacos"), entry(26, "hexacos"), entry(27, "heptacos"),
+        entry(28, "octacos"), entry(29, "nonacos"), entry(30, "triacontak"),
+        entry(31, "hentriacont"), entry(32, "dotriacont"), entry(33, "tritriacont"),
+        entry(34, "tetra-triacont"), entry(35, "pentatriacont"), entry(36, "hexatriacont"),
+        entry(37, "heptatriacont"), entry(38, "octatriacont"), entry(39, "nonatriacont"),
+        entry(40, "quadragint"), entry(41, "unquadragint"), entry(42, "duoquadragint"),
+        entry(43, "trequadragint"), entry(44, "tetrarquadragint"), entry(45, "pentquadragint"),
+        entry(46, "hexquadragint"), entry(47, "heptquadragint"), entry(48, "octquadragint"),
+        entry(49, "nonquadragint"), entry(50, "quinquagint"));
 }

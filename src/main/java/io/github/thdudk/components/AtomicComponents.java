@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import java.util.List;
 import java.util.Set;
 
+
 @AllArgsConstructor
 public enum AtomicComponents {
     CARBON(4, "N/A", "Carbon", "", Color.BLACK),
