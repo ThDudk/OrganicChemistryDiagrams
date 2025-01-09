@@ -6,6 +6,7 @@ import io.github.thdudk.components.Bonds;
 import io.github.thdudk.components.ComponentIdPair;
 import io.github.thdudk.graphs.weighted.WeightedGraph;
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -91,10 +92,13 @@ public class App extends Application {
         moleculeViewer = launchGraph.map(graph -> new MoleculeView(700, 400, graph))
             .orElseGet(() -> new MoleculeView(700, 400));
 
+        VBox bottomRightVBox = new VBox();
+        final Vector2D bottomRightVBoxOffset = new Vector2D(130, 100);
+        bottomRightVBox.setAlignment(Pos.BOTTOM_RIGHT);
+
         // add save button
         Button save = new Button();
         save.setText("Save Molecule");
-        final Vector2D saveBtnOffset = new Vector2D(150, 100);
         save.setOnMouseClicked(_ -> {
             // - save the molecule -
             ObjectMapper mapper = new ObjectMapper();
@@ -107,14 +111,25 @@ public class App extends Application {
             System.exit(0);
         });
 
+        // add clear button
+        Button clear = new Button();
+        clear.setText("Clear");
+        clear.setOnMouseClicked(_ -> {
+            // clear the graph
+            moleculeViewer.clear();
+        });
+
+        bottomRightVBox.getChildren().add(save);
+        bottomRightVBox.getChildren().add(clear);
+
         // add listeners to recenter the molecule viewer when the window is resized
         stage.widthProperty().addListener((obs, oldVal, newVal) -> {
             moleculeViewer.setLayoutX(newVal.doubleValue() / 2);
-            save.setLayoutX(newVal.doubleValue() - saveBtnOffset.getX());
+            bottomRightVBox.setLayoutX(newVal.doubleValue() - bottomRightVBoxOffset.getX());
         });
         stage.heightProperty().addListener((obs, oldVal, newVal) -> {
             moleculeViewer.setLayoutY(newVal.doubleValue() / 2);
-            save.setLayoutY(newVal.doubleValue() - saveBtnOffset.getY());
+            bottomRightVBox.setLayoutY(newVal.doubleValue() - bottomRightVBoxOffset.getY());
         });
 
         // add executor to refresh the molecule's name 10 times a second
@@ -124,12 +139,11 @@ public class App extends Application {
                 moleculeName.setText(new MoleculeNamer(moleculeViewer.getMolecule().build()).getExplicitName());
             } catch(RuntimeException ex) {
                 moleculeName.setText("Invalid Molecule");
-                throw ex;
             }
         }, 0, 100, TimeUnit.MILLISECONDS);
 
         root.getChildren().add(moleculeName);
-        root.getChildren().add(save);
+        root.getChildren().add(bottomRightVBox);
         root.getChildren().add(moleculeViewer);
         root.getChildren().add(componentType);
         root.getChildren().add(bondType);

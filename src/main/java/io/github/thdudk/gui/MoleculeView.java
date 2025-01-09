@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MoleculeView extends Parent {
     @Getter
-    private final WeightedGraphBuilder<ComponentIdPair, Bonds> molecule;
+    private WeightedGraphBuilder<ComponentIdPair, Bonds> molecule;
     private final Map<ComponentIdPair, VisibleNode> visibleNodes = new HashMap<>();
     private final List<VisibleEdge> visibleEdges = new ArrayList<>();
     private static final double dist = 40;
@@ -105,6 +105,14 @@ public class MoleculeView extends Parent {
         VisibleEdge edge = new VisibleEdge(visibleNodes.get(root), visibleNodes.get(component), bond);
         getChildren().addFirst(edge);
         visibleEdges.add(edge);
+    }
+
+    public void clear() {
+        getChildren().clear();
+        visibleEdges.clear();
+        visibleNodes.clear();
+        molecule = WeightedGraphBuilder.of();
+        addRoot();
     }
 
     private Vector2D getVectorAwayFromNeighbours(ComponentIdPair root) {
