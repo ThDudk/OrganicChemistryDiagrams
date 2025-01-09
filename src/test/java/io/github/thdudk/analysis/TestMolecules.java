@@ -88,7 +88,7 @@ public class TestMolecules {
             .addUndirEdge(getEdge(ethanol), Bonds.SINGLE, AtomicComponents.HYDROXYL.idPair())
             .build();
     }
-    public static WeightedGraph<ComponentIdPair, Bonds> prop2Ol() {
+    public static WeightedGraph<ComponentIdPair, Bonds> propan2Ol() {
         val propane = alkaneOf(3);
         return WeightedGraphBuilder.of(propane)
             .addUndirEdge(asList(propane).get(1), Bonds.SINGLE, AtomicComponents.HYDROXYL.idPair())

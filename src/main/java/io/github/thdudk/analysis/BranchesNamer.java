@@ -38,6 +38,10 @@ public abstract class BranchesNamer {
         List<String> names = new ArrayList<>(positions.keySet());
         names.sort(String::compareTo);
 
+        // numerically sort the positions
+        for(List<Integer> posArr : positions.values())
+            posArr.sort(Integer::compareTo);
+
         // put it all together
         StringBuilder branchNamePortion = new StringBuilder();
 

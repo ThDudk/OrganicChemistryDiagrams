@@ -35,7 +35,7 @@ public class AlchoholNamer extends AlkaneNamer {
     @Override
     public String getRootNamePortion() {
         String root = core.getRootNamePortion();
-        return root.substring(0, root.length() - 1)
+        return root.substring(0, root.length() - 1) // remove 1 char and add ol
             + "-" + hydroxylPositions.toString().substring(1, hydroxylPositions.toString().length() - 1).replaceAll(" ", "")
             + "-" + Prefixes.componentCount.get(hydroxylPositions.size()) + "ol";
     }

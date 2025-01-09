@@ -1,13 +1,17 @@
 package io.github.thdudk.gui;
 
+import com.sun.javafx.geom.Edge;
 import io.github.thdudk.components.AtomicComponents;
 import io.github.thdudk.components.Bonds;
 import io.github.thdudk.components.ComponentIdPair;
 import io.github.thdudk.construction.builders.WeightedGraphBuilder;
+import io.github.thdudk.graphs.weighted.WeightedGraph;
+import io.github.thdudk.iterators.DepthFirstIterator;
 import javafx.scene.Parent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import lombok.Getter;
+import lombok.val;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import java.util.*;
@@ -33,9 +37,30 @@ public class MoleculeView extends Parent {
 
         addRoot();
     }
+    public MoleculeView(double x, double y, WeightedGraph<ComponentIdPair, Bonds> graph) {
+        // update pos
+        setLayoutX(x);
+        setLayoutY(y);
+
+        molecule = WeightedGraphBuilder.of();
+
+        // adds the given graph to the builder (done using this.add() to generate the visuals)
+        ComponentIdPair root = graph.getNodes().stream().filter(n -> n.getComponent().equals(AtomicComponents.CARBON)).findAny().orElseThrow();
+        val iterator = new DepthFirstIterator<>(graph, root);
+
+        addRoot(iterator.next());
+        while(iterator.hasNext()) {
+            ComponentIdPair next = iterator.next();
+            ComponentIdPair parent = iterator.getParent(next);
+
+            add(next, graph.getEdgeBetween(next, iterator.getParent(next)).orElseThrow(), iterator.getParent(next));
+        }
+    }
 
     public void addRoot() {
-        ComponentIdPair root = AtomicComponents.CARBON.idPair();
+        addRoot(AtomicComponents.CARBON.idPair());
+    }
+    public void addRoot(ComponentIdPair root) {
         molecule.addNode(root);
 
         VisibleNode rootNode = new VisibleNode(Vector2D.ZERO, AtomicComponents.CARBON);
@@ -57,23 +82,27 @@ public class MoleculeView extends Parent {
         }, 0, 50, TimeUnit.MILLISECONDS);
     }
     public void add(AtomicComponents component, Bonds bond, ComponentIdPair root) {
-        if(molecule.build().getOutDegree(root) == 4) return;
         if(!component.equals(AtomicComponents.CARBON)) bond = Bonds.SINGLE; // prevent the user from adding other components with a double bond
 
-        // this is done before the node is added bc it will complicate getVectorAwayFromNeighbours(root)
-        VisibleNode newNode = new VisibleNode(visibleNodes.get(root).getPos().add(getVectorAwayFromNeighbours(root)), component);
-
         ComponentIdPair added = component.idPair();
-        molecule.addUndirEdge(root, bond, added);
+        add(added, bond, root);
+    }
+    public void add(ComponentIdPair component, Bonds bond, ComponentIdPair root) {
+        if(molecule.build().getOutDegree(root) == 4) return;
+
+        // this is done before the node is added bc it will complicate getVectorAwayFromNeighbours(root)
+        VisibleNode newNode = new VisibleNode(visibleNodes.get(root).getPos().add(getVectorAwayFromNeighbours(root)), component.getComponent());
+
+        molecule.addUndirEdge(root, bond, component);
 
         // add visible node
-        visibleNodes.put(added, newNode);
-        if(added.getComponent().equals(AtomicComponents.CARBON)) // only allow nodes to be added to carbons
-            newNode.setOnMouseClicked(_ -> add(App.getSelectedComponentType(), App.getSelectedBondType(), added));
+        visibleNodes.put(component, newNode);
+        if(component.getComponent().equals(AtomicComponents.CARBON)) // only allow nodes to be added to carbons
+            newNode.setOnMouseClicked(_ -> add(App.getSelectedComponentType(), App.getSelectedBondType(), component));
         getChildren().add(newNode);
 
         // add visible edge
-        VisibleEdge edge = new VisibleEdge(visibleNodes.get(root), visibleNodes.get(added), bond);
+        VisibleEdge edge = new VisibleEdge(visibleNodes.get(root), visibleNodes.get(component), bond);
         getChildren().addFirst(edge);
         visibleEdges.add(edge);
     }

@@ -1,7 +1,10 @@
 package io.github.thdudk.gui;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.thdudk.analysis.MoleculeNamer;
 import io.github.thdudk.components.AtomicComponents;
 import io.github.thdudk.components.Bonds;
+import io.github.thdudk.components.ComponentIdPair;
+import io.github.thdudk.graphs.weighted.WeightedGraph;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -14,20 +17,32 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.val;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class App extends Application {
     private static VBox componentType, bondType;
+    private static Optional<WeightedGraph<ComponentIdPair, Bonds>> launchGraph = Optional.empty();
 
     public static void main(String[] args) {
         launch(args);
     }
 
+    public static void launchGraph(WeightedGraph<ComponentIdPair, Bonds> graph) {
+        launchGraph = Optional.of(graph);
+        launch();
+    }
+
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         // set the scene
         Group root = new Group();
         Scene scene = new Scene(root);
@@ -72,24 +87,34 @@ public class App extends Application {
         }
 
         // create molecule diagram
-        MoleculeView moleculeViewer = new MoleculeView(700, 400);
+        MoleculeView moleculeViewer;
+        moleculeViewer = launchGraph.map(graph -> new MoleculeView(700, 400, graph))
+            .orElseGet(() -> new MoleculeView(700, 400));
+
+        // add save button
+        Button save = new Button();
+        save.setText("Save Molecule");
+        final Vector2D saveBtnOffset = new Vector2D(150, 100);
+        save.setOnMouseClicked(_ -> {
+            // - save the molecule -
+            ObjectMapper mapper = new ObjectMapper();
+
+            try{
+                File output = new File("./src/main/resources/molecules/" + moleculeName.getText());
+                output.createNewFile();
+                mapper.writer().writeValue(output, moleculeViewer.getMolecule().build());
+            } catch (IOException e) {throw new RuntimeException(e);}
+            System.exit(0);
+        });
 
         // add listeners to recenter the molecule viewer when the window is resized
-        stage.widthProperty().addListener((obs, oldVal, newVal) ->
-            moleculeViewer.setLayoutX(newVal.doubleValue() / 2)
-        );
-        stage.heightProperty().addListener((obs, oldVal, newVal) ->
-            moleculeViewer.setLayoutY(newVal.doubleValue() / 2)
-        );
-
-        // add clear button
-        Button clear = new Button();
-        clear.setText("Clear");
-        clear.setLayoutX(50);
-        clear.setLayoutY(100);
-        clear.setOnMouseClicked(_ -> {
-            root.getChildren().remove(moleculeViewer);
-            root.getChildren().add(new MoleculeView(700, 400));
+        stage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            moleculeViewer.setLayoutX(newVal.doubleValue() / 2);
+            save.setLayoutX(newVal.doubleValue() - saveBtnOffset.getX());
+        });
+        stage.heightProperty().addListener((obs, oldVal, newVal) -> {
+            moleculeViewer.setLayoutY(newVal.doubleValue() / 2);
+            save.setLayoutY(newVal.doubleValue() - saveBtnOffset.getY());
         });
 
         // add executor to refresh the molecule's name 10 times a second
@@ -104,6 +129,7 @@ public class App extends Application {
         }, 0, 100, TimeUnit.MILLISECONDS);
 
         root.getChildren().add(moleculeName);
+        root.getChildren().add(save);
         root.getChildren().add(moleculeViewer);
         root.getChildren().add(componentType);
         root.getChildren().add(bondType);

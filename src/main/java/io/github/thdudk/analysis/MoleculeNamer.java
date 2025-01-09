@@ -5,6 +5,9 @@ import io.github.thdudk.components.Bonds;
 import io.github.thdudk.components.ComponentIdPair;
 import io.github.thdudk.graphs.weighted.WeightedGraph;
 import io.github.thdudk.graphs.weighted.WeightedGraph.EdgeEndpointPair;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.util.List;
 import java.util.Set;
