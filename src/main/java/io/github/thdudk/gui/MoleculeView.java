@@ -15,6 +15,7 @@ import lombok.val;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +27,18 @@ public class MoleculeView extends Parent {
     private final List<VisibleEdge> visibleEdges = new ArrayList<>();
     private static final double dist = 40;
 
-    ScheduledExecutorService nodeAnimation = Executors.newSingleThreadScheduledExecutor();
+    private final Runnable nodeAni = () -> {
+        // update visibleNodes
+        Collection<VisibleNode> nodes = visibleNodes.values();
+        for(VisibleNode node : nodes) node.applyForces(nodes);
+        for(VisibleEdge edge : visibleEdges) edge.applyForces();
+        for(VisibleNode node : nodes) node.applySelfForces();
+
+        // update visibleEdges
+        for(VisibleEdge edge : visibleEdges)
+            edge.update();
+    };
+    private final ScheduledExecutorService nodeAnimation = Executors.newSingleThreadScheduledExecutor();
 
     public MoleculeView(double x, double y) {
         // update pos
@@ -69,17 +81,7 @@ public class MoleculeView extends Parent {
         rootNode.setOnMouseClicked(_ -> add(App.getSelectedComponentType(), App.getSelectedBondType(), root)); // adds a new node when clicked
 
         // repeats the animation every 50 ms
-        nodeAnimation.scheduleAtFixedRate(() -> {
-            // update visibleNodes
-            Collection<VisibleNode> nodes = visibleNodes.values();
-            for(VisibleNode node : nodes) node.applyForces(nodes);
-            for(VisibleEdge edge : visibleEdges) edge.applyForces();
-            for(VisibleNode node : nodes) node.applySelfForces();
-
-            // update visibleEdges
-            for(VisibleEdge edge : visibleEdges)
-                edge.update();
-        }, 0, 50, TimeUnit.MILLISECONDS);
+        nodeAnimation.scheduleAtFixedRate(nodeAni, 0, 50, TimeUnit.MILLISECONDS);
     }
     public void add(AtomicComponents component, Bonds bond, ComponentIdPair root) {
         if(!component.equals(AtomicComponents.CARBON)) bond = Bonds.SINGLE; // prevent the user from adding other components with a double bond
@@ -88,7 +90,7 @@ public class MoleculeView extends Parent {
         add(added, bond, root);
     }
     public void add(ComponentIdPair component, Bonds bond, ComponentIdPair root) {
-        if(molecule.build().getOutDegree(root) == 4) return;
+        if(molecule.build().getEdges(root).stream().map(a -> a.getEdge().number).reduce(Integer::sum).orElse(0) + bond.number > 4) return;
 
         // this is done before the node is added bc it will complicate getVectorAwayFromNeighbours(root)
         VisibleNode newNode = new VisibleNode(visibleNodes.get(root).getPos().add(getVectorAwayFromNeighbours(root)), component.getComponent());

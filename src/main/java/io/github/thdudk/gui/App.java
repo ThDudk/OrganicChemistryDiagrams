@@ -47,6 +47,7 @@ public class App extends Application {
         // set the scene
         Group root = new Group();
         Scene scene = new Scene(root);
+        stage.requestFocus();
 
         // create molecule name text
         Text moleculeName = new Text();

@@ -40,7 +40,7 @@ public class Core {
                     case "1" -> App.main(args);
                     case "2" -> loadMolecule(reader);
                     default -> {
-                        System.out.println("Invalid input, please try again.");
+                        System.out.println("\n⚠ Invalid input, please try again. ⚠\n");
                         continue;
                     }
                 }
@@ -50,7 +50,7 @@ public class Core {
     }
 
     private static void loadMolecule(BufferedReader reader) throws IOException {
-        System.out.println("Molecules:");
+        System.out.println("\nMolecules:");
         // read all file paths into memory
         List<String> files;
 
@@ -64,21 +64,22 @@ public class Core {
             throw new RuntimeException(e);
         }
 
-        // print out all available files
-        for(int i = 0; i < files.size(); i++)
-            System.out.println(i + ") " + files.get(i));
-
         int chosen;
         // get valid user input
         while(true) {
-            System.out.print("File number: ");
+            // print out all available files
+            for(int i = 0; i < files.size(); i++)
+                System.out.println(i + ") " + files.get(i));
+
+            System.out.print("\nOpen file number: ");
             try {
                 chosen = Integer.parseInt(reader.readLine());
             } catch (IOException e) {
-                System.out.println("Invalid input. Please try again");
+                System.out.println("\n⚠ Invalid input. Please try again ⚠\n");
                 continue;
             }
             if(chosen >= 0 && chosen < files.size()) break;
+            System.out.println("\nThat file doesn't exist. Please try again\n");
         }
 
         App.launchGraph(readGraph(new File("./src/main/resources/molecules/" + files.get(chosen))));
